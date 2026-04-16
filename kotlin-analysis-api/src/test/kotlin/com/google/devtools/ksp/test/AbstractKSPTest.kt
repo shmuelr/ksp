@@ -213,8 +213,7 @@ abstract class AbstractKSPTest(frontend: FrontendKind<*>, val experimentalPsiMod
             path,
             testConfiguration.directives,
         )
-        val dependencyProvider = ArtifactsProvider(testServices, moduleStructure.modules)
-        testServices.registerArtifactsProvider(dependencyProvider)
+        testServices.registerArtifactsProvider(ArtifactsProvider())
         testServices.register(TestModuleStructure::class, moduleStructure)
 
         val mainModule = moduleStructure.modules.last()
