@@ -20,6 +20,7 @@ package com.google.devtools.ksp.impl
 import com.google.devtools.ksp.common.visitor.CollectAnnotatedSymbolsVisitor
 import com.google.devtools.ksp.impl.symbol.kotlin.KSTypeImpl
 import com.google.devtools.ksp.impl.symbol.kotlin.Restorable
+import com.google.devtools.ksp.impl.symbol.kotlin.findUseSiteTargets
 import com.google.devtools.ksp.impl.symbol.kotlin.fullyExpand
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -66,7 +67,8 @@ class AAResolutionStrategy(
                 for (annotation in annotated.annotations) {
                     val kaType = (annotation.annotationType.resolve() as? KSTypeImpl)?.type ?: continue
                     val annotationFqN = kaType.fullyExpand().symbol?.classId?.asFqNameString() ?: continue
-                    getOrPut(annotationFqN, ::mutableSetOf).add(annotated)
+                    getOrPut(annotationFqN, ::mutableSetOf)
+                        .addAll(annotated.findUseSiteTargets())
                 }
             }
         }

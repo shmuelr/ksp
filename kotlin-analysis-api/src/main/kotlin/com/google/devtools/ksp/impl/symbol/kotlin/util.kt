@@ -20,6 +20,7 @@
 package com.google.devtools.ksp.impl.symbol.kotlin
 
 import com.google.devtools.ksp.ExceptionMessage
+import com.google.devtools.ksp.common.MemoizedSequence
 import com.google.devtools.ksp.common.impl.KSNameImpl
 import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.impl.KSPCoreEnvironment
@@ -1093,3 +1094,22 @@ internal val KaDeclarationSymbol.internalSuffix: String
 // Annotations on deeply synthesized members like getter of Java annotation arguments can be defined in src.
 internal val KSNode.definitionOrigin: Origin
     get() = containingFile?.origin ?: origin
+
+internal fun AnnotationUseSiteTarget?.getTargetFor(annotated: KSAnnotated): KSAnnotated? = when (this) {
+    null -> annotated
+    AnnotationUseSiteTarget.FILE -> this as? KSFile
+    AnnotationUseSiteTarget.PROPERTY -> TODO()
+    AnnotationUseSiteTarget.FIELD -> TODO()
+    AnnotationUseSiteTarget.GET -> TODO()
+    AnnotationUseSiteTarget.SET -> TODO()
+    AnnotationUseSiteTarget.RECEIVER -> TODO()
+    AnnotationUseSiteTarget.PARAM -> TODO()
+    AnnotationUseSiteTarget.SETPARAM -> TODO()
+    AnnotationUseSiteTarget.DELEGATE -> TODO()
+    AnnotationUseSiteTarget.ALL -> TODO()
+}
+
+internal fun KSAnnotated.findUseSiteTargets(): Set<KSAnnotated> =
+    this.annotations.mapNotNull { annotation ->
+        annotation.useSiteTarget.getTargetFor(this)
+    }.toSet()
