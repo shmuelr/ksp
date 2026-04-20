@@ -215,6 +215,12 @@ class KSPAAPsiTest : AbstractKSPAATest(true) {
         runTest("../test-utils/testData/api/constructorDeclarations.kt")
     }
 
+    @TestMetadata("constructorParameters.kt")
+    @Test
+    fun testConstructorParameters() {
+        runTest("../kotlin-analysis-api/testData/getSymbolsWithAnnotation/constructorParameters.kt")
+    }
+
     @TestMetadata("crossModuleTypeAlias.kt")
     @Test
     fun testCrossModuleTypeAlias() {
