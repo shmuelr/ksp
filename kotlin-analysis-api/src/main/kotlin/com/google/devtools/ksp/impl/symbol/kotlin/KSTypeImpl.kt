@@ -161,8 +161,18 @@ class KSTypeImpl private constructor(internal val type: KaType) : KSType {
     override val isSuspendFunctionType: Boolean
         get() = type is KaFunctionType && type.isSuspend
 
+    // Per github.com/google/ksp/issues/2576: fullyExpand() opens a fresh
+    // Analysis API session every call, and hashCode() is called by every
+    // HashMap/HashSet containing this KSTypeImpl. Cache via two fields so we
+    // can represent both a true zero hash and "not yet computed" correctly.
+    @Volatile private var cachedHashCode: Int = 0
+    @Volatile private var cachedHashCodeSet: Boolean = false
     override fun hashCode(): Int {
-        return type.fullyExpand().hashCode()
+        if (cachedHashCodeSet) return cachedHashCode
+        val h = type.fullyExpand().hashCode()
+        cachedHashCode = h
+        cachedHashCodeSet = true
+        return h
     }
 
     override fun equals(other: Any?): Boolean {
